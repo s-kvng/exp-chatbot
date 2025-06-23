@@ -1,15 +1,56 @@
 "use client";
 
-import type React from "react";
+import React, {useRef, useEffect} from "react";
 import { useChat } from "@ai-sdk/react";
 import { useOnlineStatus } from "@/hooks/use-online-status";
+import { toast } from "sonner"
 
 // A VERY simplified version for debugging
 export default function EnhancedAIChatInterface() {
+const toastIdRef = useRef<string | number | null>(null)
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null)
 const isOnline = useOnlineStatus();
   const { messages, input, setInput, handleSubmit } = useChat({
     api: "/api/v1/chat",
   });
+
+
+    useEffect(() => {
+    const cleanup = () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current)
+        timeoutRef.current = null
+      }
+    }
+
+    if (!isOnline) {
+      if (!toastIdRef.current) {
+        toastIdRef.current = toast.loading("Reconnecting...", {
+          duration: Number.POSITIVE_INFINITY,
+        })
+      }
+
+      cleanup()
+      timeoutRef.current = setTimeout(() => {
+        if (!isOnline && toastIdRef.current) {
+          toast.error("You are offline. Please check your connection.", {
+            id: toastIdRef.current,
+            duration: 5000,
+          })
+          toastIdRef.current = null
+        }
+      }, 50000)
+    } else if (toastIdRef.current) {
+      cleanup()
+      toast.success("Reconnected", {
+        id: toastIdRef.current,
+        duration: 2000,
+      })
+      toastIdRef.current = null
+    }
+
+    return cleanup
+  }, [isOnline])
 
   return (
     <div style={{ position: 'fixed', bottom: 10, right: 10, background: 'white', border: '1px solid black', padding: '10px', zIndex: 1000 }}>
