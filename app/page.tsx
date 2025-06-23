@@ -1,10 +1,14 @@
-"use client"
+"use client";
 
 import Image from "next/image";
 import dynamic from "next/dynamic";
 
 // Dynamically load the component with SSR disabled
-const EnhancedAIChatInterface = dynamic(() => import("@/component/enhanced-ai-chat-component"), {
+// const EnhancedAIChatInterface = dynamic(() => import("@/component/enhanced-ai-chat-component"), {
+//   ssr: false,
+// });
+
+const ChatbotWidget = dynamic(() => import("@/components/ChatbotWidget"), {
   ssr: false,
 });
 
@@ -59,7 +63,8 @@ export default function Home() {
           </a>
         </div>
 
-         <EnhancedAIChatInterface />
+        <ChatbotWidget />
+        {/* <EnhancedAIChatInterface /> */}
       </main>
       <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
         <a
@@ -108,8 +113,6 @@ export default function Home() {
           Go to nextjs.org →
         </a>
       </footer>
-
-     
     </div>
   );
 }
