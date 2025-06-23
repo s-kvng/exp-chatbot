@@ -1,6 +1,6 @@
 "use client"
 
-import type React from "react"
+import React from "react"
 import { useRef, useEffect, useState } from "react"
 import { useOnlineStatus } from "@/hooks/use-online-status"
 import { toast } from "sonner"
