@@ -4,7 +4,6 @@ import React from "react"
 import { useRef, useEffect, useState } from "react"
 import { useOnlineStatus } from "@/hooks/use-online-status"
 import { toast } from "sonner"
-import { useChat } from "@ai-sdk/react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent } from "@/components/ui/card"
@@ -77,17 +76,55 @@ useEffect(() => {
 
   console.log("support streaming ", streamingEnabled)
 
-  const { messages, input, setInput, handleSubmit, status, error, reload, stop } = useChat({
-    api: "/api/v1/chat",
-    initialMessages: [
+  // const { messages, input, setInput, handleSubmit, status, error, reload, stop } = useChat({
+  //   api: "/api/v1/chat",
+  //   initialMessages: [
+  //     {
+  //       id: "1",
+  //       content:
+  //         "Hello! I'm Aniima AI, your mental health companion. I'm here to listen, support, and guide you through whatever you're experiencing. How are you feeling today? 💜",
+  //       role: "assistant",
+  //     },
+  //   ],
+  // })
+
+  const [messages, setMessages] = useState([
+    {
+      id: "1",
+      content:
+        "Hello! I'm Aniima AI, your mental health companion. I'm here to listen, support, and guide you through whatever you're experiencing. How are you feeling today? 💜",
+      role: "assistant",
+    },
+  ])
+  const [input, setInput] = useState("")
+  const [status, setStatus] = useState<"idle" | "submitted" | "streaming">("idle")
+  const [error, setError] = useState<null | { message: string }>(null)
+
+  const handleSubmit = (e?: React.FormEvent) => {
+    if (e) e.preventDefault()
+    if (!input.trim()) return
+    setStatus("submitted")
+    setMessages((prev) => [
+      ...prev,
+      { id: String(prev.length + 1), content: input, role: "user" },
       {
-        id: "1",
-        content:
-          "Hello! I'm Aniima AI, your mental health companion. I'm here to listen, support, and guide you through whatever you're experiencing. How are you feeling today? 💜",
+        id: String(prev.length + 2),
+        content: "This is a dummy AI response. (Replace with real AI integration.)",
         role: "assistant",
       },
-    ],
-  })
+    ])
+    setInput("")
+    setTimeout(() => setStatus("idle"), 500)
+  }
+
+  const reload = () => {
+    setError(null)
+    setStatus("idle")
+  }
+
+  const stop = () => {
+    setStatus("idle")
+  }
 
   console.log("messages ", messages)
 
