@@ -1,7 +1,12 @@
 "use client"
 
 import Image from "next/image";
-import EnhancedAIChatInterface from "@/component/enhanced-ai-chat-component";
+import dynamic from "next/dynamic";
+
+// Dynamically load the component with SSR disabled
+const EnhancedAIChatInterface = dynamic(() => import("@/component/enhanced-ai-chat-component"), {
+  ssr: false,
+});
 
 export default function Home() {
   return (

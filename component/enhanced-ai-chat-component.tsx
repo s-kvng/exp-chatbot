@@ -57,14 +57,22 @@ export default function EnhancedAIChatInterface() {
     setStreamingEnabled(hasStreams)
   }, [])
 
+useEffect(() => {
+  const hasStreams =
+    typeof window.ReadableStream !== "undefined" &&
+    typeof window.TextEncoderStream !== "undefined" &&
+    typeof window.TextDecoderStream !== "undefined";
+  setStreamingEnabled(hasStreams);
+
   console.log(
-    'ReadableStream supported?', 
-    typeof window.ReadableStream !== 'undefined',
-    '\nTextEncoderStream supported?', 
-    typeof window.TextEncoderStream !== 'undefined',
-    '\nTextDecoderStream supported?', 
-    typeof window.TextDecoderStream !== 'undefined'
-  )
+    "ReadableStream supported?",
+    typeof window.ReadableStream !== "undefined",
+    "\nTextEncoderStream supported?",
+    typeof window.TextEncoderStream !== "undefined",
+    "\nTextDecoderStream supported?",
+    typeof window.TextDecoderStream !== "undefined"
+  );
+}, []);
   
 
   console.log("support streaming ", streamingEnabled)
