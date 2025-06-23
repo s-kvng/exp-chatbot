@@ -1,6 +1,4 @@
-import "core-js/stable";
-import "regenerator-runtime/runtime";
-import "whatwg-fetch";
+import "@stardazed/streams-polyfill";
 
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
