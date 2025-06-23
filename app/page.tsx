@@ -1,3 +1,5 @@
+"use client"
+
 import Image from "next/image";
 import EnhancedAIChatInterface from "@/component/enhanced-ai-chat-component";
 
