@@ -10,7 +10,7 @@ export default function EnhancedAIChatInterface() {
 const toastIdRef = useRef<string | number | null>(null)
   const timeoutRef = useRef<NodeJS.Timeout | null>(null)
 const isOnline = useOnlineStatus();
-  const { messages, input, setInput, handleSubmit } = useChat({
+  const { messages, input, setInput, handleSubmit , error } = useChat({
     api: "/api/v1/chat",
   });
 
@@ -52,10 +52,29 @@ const isOnline = useOnlineStatus();
     return cleanup
   }, [isOnline])
 
+  const parsedErrorMessage = (() => {
+  if (!error) return null;
+
+  console.error("Chat Error:", error); // Log the full error object to the console
+
+  try {
+    // Attempt to parse a JSON message
+    const parsed = JSON.parse(error.message);
+    return parsed.error || "An unexpected error occurred.";
+  } catch {
+    console.log("error ", error)
+    // Fallback to the raw error message
+    return error.message || "An unexpected error occurred.";
+  }
+})();
+
   return (
     <div style={{ position: 'fixed', bottom: 10, right: 10, background: 'white', border: '1px solid black', padding: '10px', zIndex: 1000 }}>
       <h3>Debug Chat</h3>
         <p className="text-xs font-bold">Status: {isOnline ? "Online" : "Offline"}</p>
+        {parsedErrorMessage && (
+          <p className="text-red-500 text-xs">Error: {parsedErrorMessage}</p>
+        )}
       <div style={{ height: '300px', overflowY: 'auto', border: '1px solid #ccc', marginBottom: '10px' }}>
         {messages.map(m => (
           <div key={m.id}>
